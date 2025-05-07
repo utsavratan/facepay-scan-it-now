@@ -61,6 +61,29 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
     }
   };
 
+  // Auto start camera when component mounts
+  useEffect(() => {
+    const autoStartCamera = async () => {
+      const cameraStarted = await startCamera();
+      if (cameraStarted) {
+        setIsScanning(true);
+        setScanProgress(0);
+        
+        toast({
+          title: "Starting face scan",
+          description: "Please keep your face centered in the frame",
+          duration: 3000,
+        });
+      }
+    };
+    
+    autoStartCamera();
+    
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
   useEffect(() => {
     let interval: number | undefined;
     
@@ -91,7 +114,6 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
     
     return () => {
       if (interval) clearInterval(interval);
-      stopCamera();
     };
   }, [isScanning, onSuccessfulScan, scanMode, toast]);
 

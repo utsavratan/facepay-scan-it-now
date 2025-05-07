@@ -18,7 +18,8 @@ const Dashboard = () => {
       { id: 1, name: 'Mobile Recharge', amount: -349, date: '2023-05-06' },
       { id: 2, name: 'Received from Rahul', amount: 1200, date: '2023-05-05' },
       { id: 3, name: 'Electricity Bill', amount: -1450, date: '2023-05-03' },
-      { id: 4, name: 'Grocery Store', amount: -850, date: '2023-05-02' }
+      { id: 4, name: 'Grocery Store', amount: -850, date: '2023-05-02' },
+      { id: 5, name: 'FacePay Payment', amount: -120, date: '2023-05-08' }
     ]
   };
   
@@ -63,7 +64,7 @@ const Dashboard = () => {
       title: 'FacePay',
       description: 'Make a payment using facial recognition',
       icon: 'user',
-      link: '/facepay',
+      link: '/scan',
       color: 'blue'
     }
   ];
@@ -164,7 +165,7 @@ const Dashboard = () => {
                     <Link to="/profile">Manage Profile</Link>
                   </Button>
                   <Button variant="outline" className="w-full justify-start" asChild>
-                    <Link to="/settings">Account Settings</Link>
+                    <Link to="/profile">Account Settings</Link>
                   </Button>
                   <Button variant="outline" className="w-full justify-start" asChild>
                     <Link to="/help">Help & Support</Link>
