@@ -1,11 +1,16 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Menu, User, Bell } from 'lucide-react';
+import { Menu, User, Home, CreditCard, PhoneCall, Receipt } from 'lucide-react';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
   
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md shadow-sm">
@@ -17,54 +22,112 @@ const Navbar = () => {
           <span className="font-bold text-xl gradient-text">FaciPay</span>
         </Link>
         
-        <div className="hidden md:flex items-center space-x-8">
-          <Link to="/" className="text-facipay-dark hover:text-facipay-blue transition-colors">Home</Link>
-          <Link to="/features" className="text-facipay-dark hover:text-facipay-blue transition-colors">Features</Link>
-          <Link to="/how-it-works" className="text-facipay-dark hover:text-facipay-blue transition-colors">How It Works</Link>
-          <Link to="/support" className="text-facipay-dark hover:text-facipay-blue transition-colors">Support</Link>
+        <div className="hidden md:flex items-center space-x-6">
+          <Link 
+            to="/dashboard" 
+            className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-colors ${
+              isActive('/dashboard') ? 'bg-facipay-light-blue text-facipay-blue' : 'text-facipay-dark hover:text-facipay-blue'
+            }`}
+          >
+            <Home size={18} />
+            <span>Home</span>
+          </Link>
+          <Link 
+            to="/scan" 
+            className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-colors ${
+              isActive('/scan') ? 'bg-facipay-light-blue text-facipay-blue' : 'text-facipay-dark hover:text-facipay-blue'
+            }`}
+          >
+            <CreditCard size={18} />
+            <span>Pay</span>
+          </Link>
+          <Link 
+            to="/recharge" 
+            className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-colors ${
+              isActive('/recharge') ? 'bg-facipay-light-blue text-facipay-blue' : 'text-facipay-dark hover:text-facipay-blue'
+            }`}
+          >
+            <PhoneCall size={18} />
+            <span>Recharge</span>
+          </Link>
+          <Link 
+            to="/bills" 
+            className={`flex items-center space-x-1 px-3 py-2 rounded-md transition-colors ${
+              isActive('/bills') ? 'bg-facipay-light-blue text-facipay-blue' : 'text-facipay-dark hover:text-facipay-blue'
+            }`}
+          >
+            <Receipt size={18} />
+            <span>Bills</span>
+          </Link>
         </div>
         
-        <div className="hidden md:flex items-center space-x-4">
-          <Button variant="outline" asChild>
-            <Link to="/login">Login</Link>
-          </Button>
+        <div className="hidden md:flex">
           <Button className="gradient-bg" asChild>
-            <Link to="/dashboard">Dashboard</Link>
+            <Link to="/profile">
+              <User size={18} className="mr-2" />
+              Profile
+            </Link>
           </Button>
         </div>
         
-        <div className="flex md:hidden items-center space-x-2">
+        <div className="flex md:hidden items-center">
           <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <Menu className="h-5 w-5" />
           </Button>
-          <Link to="/notifications">
-            <Button variant="ghost" size="icon">
-              <Bell className="h-5 w-5" />
-            </Button>
-          </Link>
-          <Link to="/profile">
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
-          </Link>
         </div>
       </div>
       
       {isMenuOpen && (
         <div className="md:hidden bg-white py-4 px-4 shadow-lg">
-          <div className="flex flex-col space-y-3">
-            <Link to="/" className="text-facipay-dark hover:text-facipay-blue py-2 px-3 rounded-md hover:bg-facipay-light-blue transition-colors">Home</Link>
-            <Link to="/features" className="text-facipay-dark hover:text-facipay-blue py-2 px-3 rounded-md hover:bg-facipay-light-blue transition-colors">Features</Link>
-            <Link to="/how-it-works" className="text-facipay-dark hover:text-facipay-blue py-2 px-3 rounded-md hover:bg-facipay-light-blue transition-colors">How It Works</Link>
-            <Link to="/support" className="text-facipay-dark hover:text-facipay-blue py-2 px-3 rounded-md hover:bg-facipay-light-blue transition-colors">Support</Link>
-            <div className="pt-2 flex space-x-2">
-              <Button variant="outline" className="flex-1" asChild>
-                <Link to="/login">Login</Link>
-              </Button>
-              <Button className="gradient-bg flex-1" asChild>
-                <Link to="/dashboard">Dashboard</Link>
-              </Button>
-            </div>
+          <div className="flex flex-col space-y-2">
+            <Link 
+              to="/dashboard" 
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                isActive('/dashboard') ? 'bg-facipay-light-blue text-facipay-blue' : 'text-facipay-dark hover:text-facipay-blue'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Home size={18} />
+              <span>Home</span>
+            </Link>
+            <Link 
+              to="/scan" 
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                isActive('/scan') ? 'bg-facipay-light-blue text-facipay-blue' : 'text-facipay-dark hover:text-facipay-blue'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <CreditCard size={18} />
+              <span>Pay</span>
+            </Link>
+            <Link 
+              to="/recharge" 
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                isActive('/recharge') ? 'bg-facipay-light-blue text-facipay-blue' : 'text-facipay-dark hover:text-facipay-blue'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <PhoneCall size={18} />
+              <span>Recharge</span>
+            </Link>
+            <Link 
+              to="/bills" 
+              className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                isActive('/bills') ? 'bg-facipay-light-blue text-facipay-blue' : 'text-facipay-dark hover:text-facipay-blue'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Receipt size={18} />
+              <span>Bills</span>
+            </Link>
+            <Link 
+              to="/profile" 
+              className="gradient-bg text-white flex items-center justify-center space-x-2 px-3 py-2 rounded-md"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <User size={18} />
+              <span>Profile</span>
+            </Link>
           </div>
         </div>
       )}
