@@ -33,7 +33,7 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.play();
+        await videoRef.current.play();
       }
       
       setCameraPermission(true);
@@ -133,18 +133,20 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
         {cameraActive && (
           <video 
             ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover z-10"
             playsInline
             muted
+            autoPlay
+            style={{ transform: "scaleX(-1)" }} // Mirror effect for better user experience
           />
         )}
         
         {/* Scanner frame */}
-        <div className={`absolute inset-0 rounded-full border-4 ${isScanning ? 'border-facipay-blue animate-pulse' : 'border-gray-300'}`} />
+        <div className={`absolute inset-0 rounded-full border-4 z-20 ${isScanning ? 'border-facipay-blue animate-pulse' : 'border-gray-300'}`} />
         
         {/* Pulsing effect */}
         {isScanning && (
-          <div className="absolute inset-0 rounded-full border-4 border-facipay-blue animate-pulse-ring" />
+          <div className="absolute inset-0 rounded-full border-4 border-facipay-blue animate-pulse-ring z-20" />
         )}
         
         {/* Face placeholder when not scanning */}
@@ -156,7 +158,7 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
         
         {/* Scanning progress overlay */}
         {isScanning && (
-          <div className="absolute inset-x-0 top-0 overflow-hidden rounded-full">
+          <div className="absolute inset-x-0 top-0 overflow-hidden rounded-full z-20">
             <div className="h-full w-full bg-facipay-blue/20" 
                  style={{height: `${scanProgress}%`}} />
           </div>
