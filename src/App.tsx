@@ -18,6 +18,7 @@ import RentPaymentPage from "./pages/RentPaymentPage";
 import MoneyTransferPage from "./pages/MoneyTransferPage";
 import SubscriptionsPage from "./pages/SubscriptionsPage";
 import HelpPage from "./pages/HelpPage";
+import HowItWorksPage from "./pages/HowItWorksPage";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/transfer" element={<MoneyTransferPage />} />
           <Route path="/subscriptions" element={<SubscriptionsPage />} />
           <Route path="/help" element={<HelpPage />} />
+          <Route path="/how-it-works" element={<HowItWorksPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

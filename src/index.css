@@ -75,4 +75,8 @@
     content: '';
     @apply absolute left-0 w-full bg-facipay-blue/20 animate-scan;
   }
+  
+  .bg-facipay-light-green {
+    @apply bg-green-100;
+  }
 }

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { ScanFace, Camera } from 'lucide-react';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 interface FaceScannerProps {
   onSuccessfulScan: () => void;
@@ -13,6 +13,7 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
   const [cameraPermission, setCameraPermission] = useState<boolean | null>(null);
+  const [cameraActive, setCameraActive] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const { toast } = useToast();
@@ -36,6 +37,7 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
       }
       
       setCameraPermission(true);
+      setCameraActive(true);
       return true;
     } catch (err) {
       console.error("Error accessing camera:", err);
@@ -58,27 +60,12 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
       if (videoRef.current) {
         videoRef.current.srcObject = null;
       }
+      setCameraActive(false);
     }
   };
 
-  // Auto start camera when component mounts
+  // Cleanup on component unmount
   useEffect(() => {
-    const autoStartCamera = async () => {
-      const cameraStarted = await startCamera();
-      if (cameraStarted) {
-        setIsScanning(true);
-        setScanProgress(0);
-        
-        toast({
-          title: "Starting face scan",
-          description: "Please keep your face centered in the frame",
-          duration: 3000,
-        });
-      }
-    };
-    
-    autoStartCamera();
-    
     return () => {
       stopCamera();
     };
@@ -93,7 +80,6 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
           const newProgress = prev + 2;
           if (newProgress >= 100) {
             setIsScanning(false);
-            stopCamera();
             
             // Simulate successful scan
             toast({
@@ -117,9 +103,12 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
     };
   }, [isScanning, onSuccessfulScan, scanMode, toast]);
 
-  const handleStartScan = async () => {
-    const cameraStarted = await startCamera();
-    if (cameraStarted) {
+  const handleStartCamera = async () => {
+    await startCamera();
+  };
+
+  const handleStartScan = () => {
+    if (cameraActive) {
       setIsScanning(true);
       setScanProgress(0);
       
@@ -128,6 +117,12 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
         description: "Please keep your face centered in the frame",
         duration: 3000,
       });
+    } else {
+      toast({
+        title: "Camera not active",
+        description: "Please start your camera first",
+        variant: "destructive",
+      });
     }
   };
 
@@ -135,7 +130,7 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
     <div className="flex flex-col items-center">
       <div className="relative w-64 h-64 md:w-80 md:h-80 mb-6 overflow-hidden rounded-full">
         {/* Video element for camera feed */}
-        {isScanning && (
+        {cameraActive && (
           <video 
             ref={videoRef}
             className="absolute inset-0 w-full h-full object-cover"
@@ -153,7 +148,7 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
         )}
         
         {/* Face placeholder when not scanning */}
-        {!isScanning && (
+        {!cameraActive && (
           <div className="absolute inset-0 flex items-center justify-center">
             <ScanFace size={80} className="text-gray-400" />
           </div>
@@ -178,14 +173,26 @@ const FaceScanner: React.FC<FaceScannerProps> = ({ onSuccessfulScan, scanMode = 
             : 'Position your face in the center of the frame for quick verification.'}
         </p>
         
-        {!isScanning ? (
-          <Button onClick={handleStartScan} className="gradient-bg">
-            <Camera className="mr-2" size={18} />
-            {scanMode === 'register' ? 'Register Face' : 'Start Scan'}
-          </Button>
-        ) : (
-          <p className="text-facipay-blue font-medium">Scanning... {scanProgress}%</p>
-        )}
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          {!cameraActive ? (
+            <Button onClick={handleStartCamera} className="gradient-bg">
+              <Camera className="mr-2" size={18} />
+              Start Camera
+            </Button>
+          ) : !isScanning ? (
+            <>
+              <Button onClick={handleStartScan} className="gradient-bg">
+                <ScanFace className="mr-2" size={18} />
+                {scanMode === 'register' ? 'Register Face' : 'Start Scan'}
+              </Button>
+              <Button onClick={stopCamera} variant="outline">
+                Stop Camera
+              </Button>
+            </>
+          ) : (
+            <p className="text-facipay-blue font-medium">Scanning... {scanProgress}%</p>
+          )}
+        </div>
       </div>
     </div>
   );

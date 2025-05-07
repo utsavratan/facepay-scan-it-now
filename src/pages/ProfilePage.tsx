@@ -1,14 +1,18 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, Settings, Shield, CreditCard, History } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useToast } from "@/hooks/use-toast";
 
 const ProfilePage = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  
   // Sample user data
   const user = {
     name: "Utsav Singh",
@@ -16,6 +20,24 @@ const ProfilePage = () => {
     phone: "+91 9876543210",
     upiId: "misterutsav@fam",
     balance: 12450.75,
+  };
+  
+  const handleButtonClick = (action: string) => {
+    toast({
+      title: `${action} settings opened`,
+      description: `You're now managing your ${action.toLowerCase()} settings`,
+    });
+  };
+  
+  const handleLogout = () => {
+    toast({
+      title: "Logged out successfully",
+      description: "You have been logged out of your account",
+    });
+    
+    setTimeout(() => {
+      navigate('/');
+    }, 1500);
   };
 
   return (
@@ -40,15 +62,15 @@ const ProfilePage = () => {
                 <p className="text-facipay-gray mb-4">UPI ID: {user.upiId}</p>
                 
                 <div className="flex flex-wrap justify-center md:justify-start gap-3">
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => handleButtonClick('Profile')}>
                     <User size={16} className="mr-2" />
                     Edit Profile
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => handleButtonClick('Preferences')}>
                     <Settings size={16} className="mr-2" />
                     Preferences
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" onClick={() => handleButtonClick('Security')}>
                     <Shield size={16} className="mr-2" />
                     Security
                   </Button>
@@ -74,7 +96,7 @@ const ProfilePage = () => {
                 <CreditCard className="h-10 w-10 text-facipay-blue mb-2" />
                 <h3 className="font-medium mb-2">Payment Methods</h3>
                 <p className="text-sm text-facipay-gray mb-3">Manage your cards and bank accounts</p>
-                <Button variant="outline" className="w-full">Manage</Button>
+                <Button variant="outline" className="w-full" onClick={() => handleButtonClick('Payment Methods')}>Manage</Button>
               </CardContent>
             </Card>
             
@@ -94,7 +116,7 @@ const ProfilePage = () => {
                 <Shield className="h-10 w-10 text-facipay-blue mb-2" />
                 <h3 className="font-medium mb-2">KYC Verification</h3>
                 <p className="text-sm text-facipay-gray mb-3">Update your KYC documents</p>
-                <Button variant="outline" className="w-full">Verify Now</Button>
+                <Button variant="outline" className="w-full" onClick={() => handleButtonClick('KYC Verification')}>Verify Now</Button>
               </CardContent>
             </Card>
           </div>
@@ -111,7 +133,7 @@ const ProfilePage = () => {
                     <h4 className="font-medium">Notifications</h4>
                     <p className="text-sm text-facipay-gray">Manage notification preferences</p>
                   </div>
-                  <Button variant="ghost">Manage</Button>
+                  <Button variant="ghost" onClick={() => handleButtonClick('Notifications')}>Manage</Button>
                 </div>
                 
                 <div className="flex justify-between items-center py-2 border-b">
@@ -119,7 +141,7 @@ const ProfilePage = () => {
                     <h4 className="font-medium">Privacy</h4>
                     <p className="text-sm text-facipay-gray">Control your privacy settings</p>
                   </div>
-                  <Button variant="ghost">Manage</Button>
+                  <Button variant="ghost" onClick={() => handleButtonClick('Privacy')}>Manage</Button>
                 </div>
                 
                 <div className="flex justify-between items-center py-2 border-b">
@@ -127,7 +149,7 @@ const ProfilePage = () => {
                     <h4 className="font-medium">Security</h4>
                     <p className="text-sm text-facipay-gray">Update security settings</p>
                   </div>
-                  <Button variant="ghost">Manage</Button>
+                  <Button variant="ghost" onClick={() => handleButtonClick('Security')}>Manage</Button>
                 </div>
                 
                 <div className="flex justify-between items-center py-2 border-b">
@@ -135,7 +157,7 @@ const ProfilePage = () => {
                     <h4 className="font-medium">Help & Support</h4>
                     <p className="text-sm text-facipay-gray">Get help with your account</p>
                   </div>
-                  <Button variant="ghost">Contact</Button>
+                  <Button variant="ghost" onClick={() => navigate('/help')}>Contact</Button>
                 </div>
                 
                 <div className="flex justify-between items-center py-2">
@@ -143,7 +165,7 @@ const ProfilePage = () => {
                     <h4 className="font-medium text-red-600">Log Out</h4>
                     <p className="text-sm text-facipay-gray">Sign out from your account</p>
                   </div>
-                  <Button variant="ghost" className="text-red-600">Log Out</Button>
+                  <Button variant="ghost" className="text-red-600" onClick={handleLogout}>Log Out</Button>
                 </div>
               </div>
             </CardContent>
